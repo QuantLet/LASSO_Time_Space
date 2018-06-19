@@ -344,85 +344,88 @@ for(a in 2:length(alpha0)){
   save(results, file = paste("para.results_K100_M50_bn25.LS_a",a,".dat",sep=""))
 }
 
+par(mfrow = c(2, 2), mgp = c(1.5, 0.5, 0), oma = c(1, 1, 1, 1), mar = c(2.5, 1.8, 1, 1), xpd = NA, cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
+
 rep = 100
+M = 200
+alpha0 = seq(0,1.5,length.out = 10)
 
-#length_0.05 = matrix(0,rep,M)
-reject_0.01 = matrix(0,rep,M)
-reject_0.05 = matrix(0,rep,M)
-reject_0.1 = matrix(0,rep,M)
-#length.boot_0.05 = matrix(0,rep,M)
-reject.boot_0.01 = matrix(0,rep,M)
-reject.boot_0.05 = matrix(0,rep,M)
-reject.boot_0.1 = matrix(0,rep,M)
+rej.asy = matrix(0,10,3)
+rej.asy.simul = matrix(0,10,3)
+rej.boot = matrix(0,10,3)
+rej.boot.simul = matrix(0,10,3)
 
-for(r in 1:rep){
-  #length_0.05[r,] = results[[r]]$length_0.05
-  reject_0.01[r,] = results[[r]]$reject_0.01
-  reject_0.05[r,] = results[[r]]$reject_0.05
-  reject_0.1[r,] = results[[r]]$reject_0.1
-  #length.boot_0.05[r,] = results[[r]]$length.boot_0.05
-  reject.boot_0.01[r,] = results[[r]]$reject.boot_0.01
-  reject.boot_0.05[r,] = results[[r]]$reject.boot_0.05
-  reject.boot_0.1[r,] = results[[r]]$reject.boot_0.1
+for(a in 1:10){
+  load(file = paste("para.results_K200_M200_bn25.LS_a",a,".dat",sep=""))
+  
+  reject_0.01 = matrix(0,rep,M)
+  reject_0.05 = matrix(0,rep,M)
+  reject_0.1 = matrix(0,rep,M)
+  reject.boot_0.01 = matrix(0,rep,M)
+  reject.boot_0.05 = matrix(0,rep,M)
+  reject.boot_0.1 = matrix(0,rep,M)
+  
+  for(r in 1:rep){
+    reject_0.01[r,] = results[[r]]$reject_0.01
+    reject_0.05[r,] = results[[r]]$reject_0.05
+    reject_0.1[r,] = results[[r]]$reject_0.1
+    reject.boot_0.01[r,] = results[[r]]$reject.boot_0.01
+    reject.boot_0.05[r,] = results[[r]]$reject.boot_0.05
+    reject.boot_0.1[r,] = results[[r]]$reject.boot_0.1
+  }
+  
+  rej.asy[a,1] = mean(colMeans(reject_0.01)[1:(M)])
+  rej.asy[a,2] = mean(colMeans(reject_0.05)[1:(M)]) 
+  rej.asy[a,3] = mean(colMeans(reject_0.1)[1:(M)]) 
+  
+  rej.boot[a,1] = mean(colMeans(reject.boot_0.01)[1:(M)]) 
+  rej.boot[a,2] = mean(colMeans(reject.boot_0.05)[1:(M)]) 
+  rej.boot[a,3] = mean(colMeans(reject.boot_0.1)[1:(M)]) 
+  
+  reject.boot.simul_0.01 = rep(0,rep)
+  for(r in 1:rep){
+    reject.boot.simul_0.01[r] = results[[r]]$reject.boot.simul_0.01
+  }
+  rej.boot.simul[a,1] = mean(reject.boot.simul_0.01)  
+  
+  reject.boot.simul_0.05 = rep(0,rep)
+  for(r in 1:rep){
+    reject.boot.simul_0.05[r] = results[[r]]$reject.boot.simul_0.05
+  }
+  rej.boot.simul[a,2] = mean(reject.boot.simul_0.05) 
+  
+  reject.boot.simul_0.1 = rep(0,rep)
+  for(r in 1:rep){
+    reject.boot.simul_0.1[r] = results[[r]]$reject.boot.simul_0.1
+  }
+  rej.boot.simul[a,3] = mean(reject.boot.simul_0.1)
+  
+  reject.simul_0.01 = rep(0,rep)
+  for(r in 1:rep){
+    reject.simul_0.01[r] = results[[r]]$reject.simul_0.01
+  }
+  rej.asy.simul[a,1] = mean(reject.simul_0.01)
+  
+  reject.simul_0.05 = rep(0,rep)
+  for(r in 1:rep){
+    reject.simul_0.05[r] = results[[r]]$reject.simul_0.05
+  }
+  rej.asy.simul[a,2] = mean(reject.simul_0.05)
+  
+  reject.simul_0.1 = rep(0,rep)
+  for(r in 1:rep){
+    reject.simul_0.1[r] = results[[r]]$reject.simul_0.1
+  }
+  rej.asy.simul[a,3] = mean(reject.simul_0.1)
 }
 
-#mean(colMeans(length_0.05))
-mean(colMeans(reject_0.01)[1:(M)])
-mean(colMeans(reject_0.05)[1:(M)]) 
-mean(colMeans(reject_0.1)[1:(M)]) 
-#mean(colMeans(length.boot_0.05))
-mean(colMeans(reject.boot_0.01)[1:(M)]) 
-mean(colMeans(reject.boot_0.05)[1:(M)]) 
-mean(colMeans(reject.boot_0.1)[1:(M)]) 
+plot(alpha0, rej.asy[,2], xlab = expression(alpha^0), ylab = "Rejection rate", 
+     type = "l", ylim = c(0, 1), lwd = 3)
+lines(alpha0, rej.boot[, 2], lwd = 3, lty = 2)
+lines(alpha0, rej.asy.simul[, 2], lwd = 3, lty = 3)
+#lines(alpha0, rej.boot.simul[, 2], lwd = 3, lty = 4)
+#lines(alpha0, rep(0.05,10), lwd = 3, lty = 5)
+title(main = "K=200, J=200", line = 0.2, lwd = 1)
+#legend(x=0.9, y=0.4, legend=c("Ind. Asym.","Ind. Boot","Simult. Asym.","Simult. Boot"), lty=c(1,2,3,4), border = "transparent", cex = 1, box.col = "transparent", bg="transparent")
+legend(x=0.9, y=0.4, legend=c("Ind. Asym.","Ind. Boot","Simult. Boot"), lty=c(1,2,3), border = "transparent", cex = 1, box.col = "transparent", bg="transparent")
 
-#mean(colMeans(reject_0.05)[(M/2+1):M])   
-#mean(colMeans(reject.boot_0.05)[(M/2+1):M])  
-
-
-# reject.boot.simul_0.05_power = rep(0,rep)
-# for(r in 1:rep){
-#   reject.boot.simul_0.05_power[r] = results[[r]]$reject.boot.simul_0.05_power
-# }
-# mean(reject.boot.simul_0.05_power)  #power
-# 
-# reject.boot.simul_0.05_size = rep(0,rep)
-# for(r in 1:rep){
-#   reject.boot.simul_0.05_size[r] = results[[r]]$reject.boot.simul_0.05_size
-# }
-# mean(reject.boot.simul_0.05_size)  #size
-
-reject.boot.simul_0.01 = rep(0,rep)
-for(r in 1:rep){
-  reject.boot.simul_0.01[r] = results[[r]]$reject.boot.simul_0.01
-}
-mean(reject.boot.simul_0.01)  
-
-reject.boot.simul_0.05 = rep(0,rep)
-for(r in 1:rep){
-  reject.boot.simul_0.05[r] = results[[r]]$reject.boot.simul_0.05
-}
-mean(reject.boot.simul_0.05) 
-
-reject.boot.simul_0.1 = rep(0,rep)
-for(r in 1:rep){
-  reject.boot.simul_0.1[r] = results[[r]]$reject.boot.simul_0.1
-}
-mean(reject.boot.simul_0.1) 
-
-reject.simul_0.01 = rep(0,rep)
-for(r in 1:rep){
-  reject.simul_0.01[r] = results[[r]]$reject.simul_0.01
-}
-mean(reject.simul_0.01)  
-
-reject.simul_0.05 = rep(0,rep)
-for(r in 1:rep){
-  reject.simul_0.05[r] = results[[r]]$reject.simul_0.05
-}
-mean(reject.simul_0.05) 
-
-reject.simul_0.1 = rep(0,rep)
-for(r in 1:rep){
-  reject.simul_0.1[r] = results[[r]]$reject.simul_0.1
-}
-mean(reject.simul_0.1) 
