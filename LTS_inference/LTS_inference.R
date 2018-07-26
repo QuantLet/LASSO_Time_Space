@@ -203,8 +203,8 @@ sim_scene = function(nboot,T,K,M,rho,rho.var,lag,dx,dd,cd,cy,bn,alpha0){
     ### LS-IV
     fit.iv = summary(ivreg(y ~ 0 + d[,m] | v[,m]))
     alpha.hat[m] = fit.iv$coefficients[,"Estimate"]
-    #sigma[m] = fit.iv$coefficients[,"Std. Error"]*sqrt(T)
     psi[,m] = v[,m]*(y - alpha.hat[m]*d[,m])
+    phi[m] = -mean(v[,m]^2)
     ### LS-IV
     
     ### LAD-IV
@@ -216,27 +216,22 @@ sim_scene = function(nboot,T,K,M,rho,rho.var,lag,dx,dd,cd,cy,bn,alpha0){
     # for(t in 1:T){
     #   if((y[t] - alpha.hat[m]*d[t,m])<=0){psi[t,m]=-0.5*v[t,m]}else{psi[t,m]=0.5*v[t,m]}
     # }
+
+    # error = y - alpha.hat[m]*d[,m]
+    # ind    = which(density(error)$x == min(abs(density(error)$x)))
+    # # if (length(ind) == 0) {
+    # #   f = density(error)$y[which(density(error)$x == -min(abs(density(error)$x)))]
+    # # } else {
+    # #   f = density(error)$y[which(density(error)$x == min(abs(density(error)$x)))]
+    # # }
+    # f = npudens(tdat = error, edat = 0)$dens
+    # phi[m] = -mean(v[,m]^2*f)
     ### LAD-IV
     
-    error = y - alpha.hat[m]*d[,m]
-    ind    = which(density(error)$x == min(abs(density(error)$x)))
-    # if (length(ind) == 0) {
-    #   f = density(error)$y[which(density(error)$x == -min(abs(density(error)$x)))]
-    # } else {
-    #   f = density(error)$y[which(density(error)$x == min(abs(density(error)$x)))]
-    # }
-    f = npudens(tdat = error, edat = 0)$dens
     #omega[m] = var(psi[,m])
     omega[m] = lrvar(psi[,m])*T
-    phi[m] = mean(v[,m]^2*f)
+
     sigma[m] = sqrt(omega[m]/phi[m]^2)
-    
-    #inf = -psi[,m]/(phi[m]*sigma[m])
-    
-    #inf = -psi[,m]/sqrt(omega[m])
-    #sigma[m] = sqrt(mean(inf^2))  #sqrt(lrvar(inf)*T)
-    
-    
     
     #### asymptotic individual inference
     #lower_0.05[m] = alpha.hat[m]-sigma[m]*qnorm(0.975)/sqrt(T)
@@ -250,8 +245,7 @@ sim_scene = function(nboot,T,K,M,rho,rho.var,lag,dx,dd,cd,cy,bn,alpha0){
   
   #### bootstrap individual inference  
   for(m in 1:M){
-    #inf = -psi[,m]/(phi[m]*sigma[m])
-    inf = -psi[,m]/sqrt(omega[m])
+    inf = -psi[,m]/(phi[m]*sigma[m])
     for(j in 1:nboot){
       e.boot = rnorm(ln)
       sum = 0
