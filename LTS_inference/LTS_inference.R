@@ -35,7 +35,7 @@ registerDoSNOW(c1)
 #results = list()
 sim_scene = function(nboot,T,K,M,rho,rho.var,lag,dx,dd,cd,cy,bn,alpha0){ 
   #for(r in 1:rep){
-  lambda.ga = 2*1.1*qnorm(1-0.1/(2*K*M))
+  lambda.ga = 2*1.1*qnorm(1-0.1/(2*K*M))*sqrt(T)
   dn = sqrt(2*log(K*M)) - (log(log(K*M))+log(4*pi))/(2*sqrt(2*log(K*M)))
   #alpha = c(rep(1,M/2),rep(0,M/2))
   alpha = rep(alpha0,M)

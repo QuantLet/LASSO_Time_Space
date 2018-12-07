@@ -32,7 +32,7 @@ for (pp in 1:length(P)) {
         }
     }
     beta.matrix = matrix(0, p, K)
-    lambda.ga = 2 * 1.1 * qnorm(1 - 0.1/(2 * K * p))
+    lambda.ga = 2 * 1.1 * qnorm(1 - 0.1/(2 * K * p)) * sqrt(T)
     for (i in 1:p) {
         indx = ceiling(i/d)
         beta.matrix[i, (d * (indx - 1) + 1):(indx * d)] = b

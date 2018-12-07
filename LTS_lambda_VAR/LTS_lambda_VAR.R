@@ -37,7 +37,7 @@ for (rr in 1:length(Rho)) {
         for (kk in 1:length(P)) {
             p = P[kk]
             K = p
-            lambda.ga = 2 * 1.1 * qnorm(1 - 0.1/(2 * K * p))
+            lambda.ga = 2 * 1.1 * qnorm(1 - 0.1/(2 * K * p)) * sqrt(T)
             Phi = bdiag(matrix(rho, d, d))
             for (pp in 1:(K/d - 1)) {
                 Phi = bdiag(Phi, matrix(rho, d, d))
