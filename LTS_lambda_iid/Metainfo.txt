@@ -1,9 +1,9 @@
 ﻿
-Name of Quantlet: LTS_lambda_system
+Name of Quantlet: LTS_lambda_iid
 
 Published in: LASSO_Time_Space
 
-Description: 'Compares the in-sample RMSE with the penalty level selected equation by equation or jointly over equations in a regression system.'
+Description: 'Compares the prediction norm with the penalty level selected equation by equation or jointly over equations in a regression system under iid data setting.'
 
 Keywords : 
 - simulation

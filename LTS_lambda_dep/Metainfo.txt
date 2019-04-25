@@ -1,9 +1,9 @@
 ﻿
-Name of Quantlet: LTS_lambda_VAR
+Name of Quantlet: LTS_lambda_dep
 
 Published in: LASSO_Time_Space
 
-Description: 'Compares the in-sample RMSE with the penalty level selected equation by equation or jointly over equations in VAR system with dependent data.'
+Description: 'Compares the prediction norm with the penalty level selected equation by equation or jointly over equations in a regression system with dependent data.'
 
 Keywords : 
 - simulation
